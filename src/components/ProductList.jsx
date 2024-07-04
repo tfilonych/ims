@@ -2,14 +2,7 @@ import { useEffect, useState } from 'react';
 import GridTable from './GridTable.jsx';
 import { category, initialRows } from '../data';
 
-const ProductList = () => {
-  const [products, setProducts] = useState([]);
-
-  useEffect(() => {
-    setProducts(initialRows);
-    console.log('products are ', products);
-  }, []);
-
+const ProductList = ({ products }) => {
   const columns = [
     { field: 'name', headerName: 'Name', width: 180, editable: true },
     {
@@ -26,12 +19,16 @@ const ProductList = () => {
 
   return (
     <div className="product-list">
-      <GridTable
-        initialRows={initialRows}
-        columns={columns}
-        rowKey="id"
-        withPurchase={true}
-      />
+      {products.length > 0 ? (
+        <GridTable
+          initialRows={products}
+          columns={columns}
+          rowKey="id"
+          withPurchase={true}
+        />
+      ) : (
+        <div>There are no products available</div>
+      )}
     </div>
   );
 };
