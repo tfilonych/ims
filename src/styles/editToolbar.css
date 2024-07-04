@@ -1,15 +1,19 @@
 .toolbar-container {
-  margin-bottom: 10px;
-}
+  display: flex;
+  width: 100%;
+  margin: 10px;
+  position: absolute;
+  top: -60px;
+  left: -20px;
 
-.toolbar-container button {
-  background-color: #273e61;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  cursor: pointer;
-}
+  svg {
+    padding: 10px;
 
-.toolbar-container button:hover {
-  background-color: #1b2a45;
+    &:hover {
+      cursor: pointer;
+      background-color: #273e61;
+      border-radius: 50%;
+      color: white;
+    }
+  }
 }

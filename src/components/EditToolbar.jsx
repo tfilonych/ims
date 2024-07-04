@@ -1,4 +1,5 @@
 import React from 'react';
+import AddCard from '@mui/icons-material/AddCard';
 
 // eslint-disable-next-line react/prop-types
 const EditToolbar = ({ setRows }) => {
@@ -12,7 +13,7 @@ const EditToolbar = ({ setRows }) => {
 
   return (
     <div className="toolbar-container">
-      <button onClick={clickHandler}>Add</button>
+      <AddCard onClick={clickHandler} />
     </div>
   );
 };

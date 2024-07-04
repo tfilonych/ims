@@ -5,11 +5,15 @@ import SaveIcon from '@mui/icons-material/Save';
 import CancelIcon from '@mui/icons-material/Close';
 import EditIcon from '@mui/icons-material/Edit';
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
+import AddToCartModal from './AddToCartModal';
 
-const GridTable = ({ initialRows, columns, rowKey }) => {
+const GridTable = ({ initialRows, columns, rowKey, withPurchase = false }) => {
   const [rows, setRows] = useState(initialRows);
   const [editingRowId, setEditingRowId] = useState(null);
   const [editRowData, setEditRowData] = useState({});
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [quantity, setQuantity] = useState(1);
 
   const startEditHandler = (id) => () => {
     const row = rows.find((row) => row[rowKey] === id);
@@ -38,7 +42,14 @@ const GridTable = ({ initialRows, columns, rowKey }) => {
   };
 
   const addToCartHandler = (id) => () => {
-    console.log(id);
+    const product = rows.find((row) => row[rowKey] === id);
+    setSelectedProduct(product);
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setQuantity(1);
   };
 
   const extendedColumns = [
@@ -50,30 +61,31 @@ const GridTable = ({ initialRows, columns, rowKey }) => {
         const isInEditMode = editingRowId === id;
 
         if (isInEditMode) {
-          return [
+          return (
             <>
               <SaveIcon onClick={saveHandler(id)} />
               <CancelIcon onClick={cancelHandler} />
-            </>,
-          ];
+            </>
+          );
         }
 
-        return [
+        return (
           <>
             <EditIcon onClick={startEditHandler(id)} />
             <DeleteIcon onClick={deleteHandler(id)} />
-            <AddShoppingCartIcon onClick={addToCartHandler(id)} />
-          </>,
-        ];
+            {withPurchase && (
+              <AddShoppingCartIcon onClick={addToCartHandler(id)} />
+            )}
+          </>
+        );
       },
     },
   ];
 
   return (
     <div className="grid-table">
-      <EditToolbar setRows={setRows} />
+      {withPurchase && <EditToolbar setRows={setRows} />}
       <table>
-        <caption>Product List</caption>
         <thead>
           <tr>
             {extendedColumns.map((col) => (
@@ -103,6 +115,13 @@ const GridTable = ({ initialRows, columns, rowKey }) => {
           ))}
         </tbody>
       </table>
+      <AddToCartModal
+        open={isModalOpen}
+        onClose={closeModal}
+        product={selectedProduct}
+        quantity={quantity}
+        setQuantity={setQuantity}
+      />
     </div>
   );
 };

@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 const menu = [
   { title: 'Products', path: '/' },
   { title: 'Categories', path: '/categories' },
+  { title: 'Orders', path: '/orders' },
 ];
 
 function Header() {
@@ -37,6 +39,9 @@ function Header() {
             ))}
           </ul>
         </nav>
+        <div className="card-icon">
+          <AddShoppingCartIcon />
+        </div>
         {/* <div className="user-menu">
           <button className="user-avatar" onClick={toggleUserMenu}>
             <img src="/static/images/avatar/2.jpg" alt="User Avatar" />

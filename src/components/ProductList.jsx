@@ -26,7 +26,12 @@ const ProductList = () => {
 
   return (
     <div className="product-list">
-      <GridTable initialRows={initialRows} columns={columns} rowKey="id" />
+      <GridTable
+        initialRows={initialRows}
+        columns={columns}
+        rowKey="id"
+        withPurchase={true}
+      />
     </div>
   );
 };
