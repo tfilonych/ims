@@ -1,0 +1,15 @@
+.toolbar-container {
+  margin-bottom: 10px;
+}
+
+.toolbar-container button {
+  background-color: #273e61;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+}
+
+.toolbar-container button:hover {
+  background-color: #1b2a45;
+}

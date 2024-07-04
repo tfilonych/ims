@@ -1,0 +1,24 @@
+* {
+  margin: 0;
+}
+
+html,
+body {
+  font-size: 14px;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+a {
+  text-decoration: none !important;
+  background: transparent;
+}
+.app-container {
+  font-family: Arial, sans-serif;
+}
+
+.content-container {
+  display: flex;
+  justify-content: center;
+  padding: 20px;
+}
