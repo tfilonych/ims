@@ -98,8 +98,8 @@ td svg {
 
   &:hover {
     cursor: pointer;
-    background-color: #273e61;
+    background-color: #273e612b;
     border-radius: 50%;
-    color: white;
+    /* color: white; */
   }
 }

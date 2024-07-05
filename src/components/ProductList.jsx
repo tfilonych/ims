@@ -19,16 +19,13 @@ const ProductList = ({ products }) => {
 
   return (
     <div className="product-list">
-      {products.length > 0 ? (
-        <GridTable
-          initialRows={products}
-          columns={columns}
-          rowKey="id"
-          withPurchase={true}
-        />
-      ) : (
-        <div>There are no products available</div>
-      )}
+      <GridTable
+        initialRows={products}
+        columns={columns}
+        rowKey="_id"
+        withPurchase={true}
+        collection="products"
+      />
     </div>
   );
 };

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import EditToolbar from './EditToolbar';
 import DeleteIcon from '@mui/icons-material/DeleteOutlined';
 import SaveIcon from '@mui/icons-material/Save';
@@ -6,8 +6,25 @@ import CancelIcon from '@mui/icons-material/Close';
 import EditIcon from '@mui/icons-material/Edit';
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 import AddToCartModal from './AddToCartModal';
+import { fetchItems, updateItem, createItem, deleteItem } from './../http';
 
-const GridTable = ({ initialRows, columns, rowKey, withPurchase = false }) => {
+/**
+ * GridTable component for displaying and editing a grid of data.
+ * @param {Object[]} initialRows - Initial rows of data.
+ * @param {Object[]} columns - Column definitions.
+ * @param {string} rowKey - Key to uniquely identify each row.
+ * @param {boolean} [withPurchase=false] - Flag to enable purchase functionality.
+ * @param {string} collection - Collection name for API calls (ex.: /'products', /'orders')
+ * @returns {JSX.Element}
+ */
+
+const GridTable = ({
+  initialRows,
+  columns,
+  rowKey,
+  withPurchase = true,
+  collection,
+}) => {
   const [rows, setRows] = useState(initialRows);
   const [editingRowId, setEditingRowId] = useState(null);
   const [editRowData, setEditRowData] = useState({});
@@ -15,16 +32,32 @@ const GridTable = ({ initialRows, columns, rowKey, withPurchase = false }) => {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [quantity, setQuantity] = useState(1);
 
+  useEffect(() => {
+    setRows(initialRows);
+  }, [initialRows]);
+
   const startEditHandler = (id) => () => {
+    console.log(id);
     const row = rows.find((row) => row[rowKey] === id);
     setEditingRowId(id);
     setEditRowData(row);
   };
 
-  const saveHandler = (id) => () => {
+  const saveHandler = (id) => async () => {
+    let updatedRow;
+    delete editRowData._id; // mongodb adds its _ids - remove when fix
+
+    if (editRowData.isNew) {
+      delete editRowData.isNew;
+      updatedRow = await createItem(collection, editRowData);
+    } else {
+      updatedRow = await updateItem(collection, id, editRowData);
+    }
+
     const updatedRows = rows.map((row) =>
-      row[rowKey] === id ? editRowData : row
+      row[rowKey] === id ? updatedRow : row
     );
+
     setRows(updatedRows);
     setEditingRowId(null);
   };
@@ -33,7 +66,8 @@ const GridTable = ({ initialRows, columns, rowKey, withPurchase = false }) => {
     setEditingRowId(null);
   };
 
-  const deleteHandler = (id) => () => {
+  const deleteHandler = (id) => async () => {
+    await deleteItem(collection, id);
     setRows(rows.filter((row) => row[rowKey] !== id));
   };
 
@@ -57,7 +91,9 @@ const GridTable = ({ initialRows, columns, rowKey, withPurchase = false }) => {
     {
       field: 'actions',
       headerName: 'Actions',
-      getActions: ({ id }) => {
+      renderCell: (params) => {
+        const id = params.row[rowKey];
+        console.log(id);
         const isInEditMode = editingRowId === id;
 
         if (isInEditMode) {
@@ -84,7 +120,15 @@ const GridTable = ({ initialRows, columns, rowKey, withPurchase = false }) => {
 
   return (
     <div className="grid-table">
-      {withPurchase && <EditToolbar setRows={setRows} />}
+      {withPurchase && (
+        <EditToolbar
+          setRows={setRows}
+          setEditingRowId={setEditingRowId}
+          setEditRowData={setEditRowData}
+          rowKey={rowKey}
+        />
+      )}
+
       <table>
         <thead>
           <tr>
@@ -94,27 +138,37 @@ const GridTable = ({ initialRows, columns, rowKey, withPurchase = false }) => {
           </tr>
         </thead>
         <tbody>
-          {rows.map((row) => (
-            <tr key={row[rowKey]}>
-              {extendedColumns.map((col) => (
-                <td key={col.field} data-label={col.headerName}>
-                  {col.field === 'actions' ? (
-                    col.getActions({ id: row[rowKey] })
-                  ) : editingRowId === row[rowKey] ? (
-                    <input
-                      type="text"
-                      value={editRowData[col.field] || ''}
-                      onChange={handleInputChange(col.field)}
-                    />
-                  ) : (
-                    row[col.field]
-                  )}
-                </td>
-              ))}
+          {rows.length > 0 ? (
+            rows.map((row) => (
+              <tr key={row[rowKey]}>
+                {extendedColumns.map((col) => (
+                  <td key={col.field} data-label={col.headerName}>
+                    {col.field === 'actions' ? (
+                      col.renderCell({ row })
+                    ) : editingRowId === row[rowKey] && col.editable ? (
+                      <input
+                        value={editRowData[col.field]}
+                        onChange={handleInputChange(col.field)}
+                      />
+                    ) : (
+                      row[col.field]
+                    )}
+                  </td>
+                ))}
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <td colSpan={extendedColumns.length}>
+                <div className="no-items-message">
+                  There are no items. Please add some.
+                </div>
+              </td>
             </tr>
-          ))}
+          )}
         </tbody>
       </table>
+
       <AddToCartModal
         open={isModalOpen}
         onClose={closeModal}
