@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import EditToolbar from './EditToolbar';
 import DeleteIcon from '@mui/icons-material/DeleteOutlined';
 import SaveIcon from '@mui/icons-material/Save';
@@ -6,17 +6,7 @@ import CancelIcon from '@mui/icons-material/Close';
 import EditIcon from '@mui/icons-material/Edit';
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 import AddToCartModal from './AddToCartModal';
-import { fetchItems, updateItem, createItem, deleteItem } from './../http';
-
-/**
- * GridTable component for displaying and editing a grid of data.
- * @param {Object[]} initialRows - Initial rows of data.
- * @param {Object[]} columns - Column definitions.
- * @param {string} rowKey - Key to uniquely identify each row.
- * @param {boolean} [withPurchase=false] - Flag to enable purchase functionality.
- * @param {string} collection - Collection name for API calls (ex.: /'products', /'orders')
- * @returns {JSX.Element}
- */
+import { updateItem, createItem, deleteItem } from './../http';
 
 const GridTable = ({
   initialRows,
@@ -24,6 +14,8 @@ const GridTable = ({
   rowKey,
   withPurchase = true,
   collection,
+  children,
+  categories,
 }) => {
   const [rows, setRows] = useState(initialRows);
   const [editingRowId, setEditingRowId] = useState(null);
@@ -37,7 +29,6 @@ const GridTable = ({
   }, [initialRows]);
 
   const startEditHandler = (id) => () => {
-    console.log(id);
     const row = rows.find((row) => row[rowKey] === id);
     setEditingRowId(id);
     setEditRowData(row);
@@ -45,8 +36,6 @@ const GridTable = ({
 
   const saveHandler = (id) => async () => {
     let updatedRow;
-    delete editRowData._id; // mongodb adds its _ids - remove when fix
-
     if (editRowData.isNew) {
       delete editRowData.isNew;
       updatedRow = await createItem(collection, editRowData);
@@ -71,8 +60,11 @@ const GridTable = ({
     setRows(rows.filter((row) => row[rowKey] !== id));
   };
 
-  const handleInputChange = (field) => (event) => {
-    setEditRowData({ ...editRowData, [field]: event.target.value });
+  const handleInputChange = (field) => (value) => {
+    setEditRowData({
+      ...editRowData,
+      [field]: value,
+    });
   };
 
   const addToCartHandler = (id) => () => {
@@ -86,6 +78,11 @@ const GridTable = ({
     setQuantity(1);
   };
 
+  const getCategoryNameById = (id) => {
+    const category = categories.find((category) => category.id === id);
+    return category ? category.name : id;
+  };
+
   const extendedColumns = [
     ...columns,
     {
@@ -93,7 +90,6 @@ const GridTable = ({
       headerName: 'Actions',
       renderCell: (params) => {
         const id = params.row[rowKey];
-        console.log(id);
         const isInEditMode = editingRowId === id;
 
         if (isInEditMode) {
@@ -128,7 +124,6 @@ const GridTable = ({
           rowKey={rowKey}
         />
       )}
-
       <table>
         <thead>
           <tr>
@@ -145,11 +140,21 @@ const GridTable = ({
                   <td key={col.field} data-label={col.headerName}>
                     {col.field === 'actions' ? (
                       col.renderCell({ row })
+                    ) : editingRowId === row[rowKey] &&
+                      col.field === 'category' ? (
+                      children({
+                        value: editRowData[col.field] || '',
+                        onChange: handleInputChange(col.field),
+                      })
                     ) : editingRowId === row[rowKey] && col.editable ? (
                       <input
-                        value={editRowData[col.field]}
-                        onChange={handleInputChange(col.field)}
+                        value={editRowData[col.field] || ''}
+                        onChange={(e) =>
+                          handleInputChange(col.field)(e.target.value)
+                        }
                       />
+                    ) : col.field === 'category' ? (
+                      getCategoryNameById(row[col.field])
                     ) : (
                       row[col.field]
                     )}
@@ -160,15 +165,12 @@ const GridTable = ({
           ) : (
             <tr>
               <td colSpan={extendedColumns.length}>
-                <div className="no-items-message">
-                  There are no items. Please add some.
-                </div>
+                There are no items. Please add some.
               </td>
             </tr>
           )}
         </tbody>
       </table>
-
       <AddToCartModal
         open={isModalOpen}
         onClose={closeModal}

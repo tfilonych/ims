@@ -12,7 +12,7 @@ const CategoryList = ({ categories }) => {
       initialRows={categories}
       columns={columns}
       collection="categories"
-      rowKey="_id"
+      rowKey="id"
     />
   );
 };

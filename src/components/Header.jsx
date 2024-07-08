@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 
-const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 const menu = [
   { title: 'Products', path: '/' },
   { title: 'Categories', path: '/categories' },
@@ -42,22 +41,6 @@ function Header() {
         <div className="card-icon">
           <AddShoppingCartIcon />
         </div>
-        {/* <div className="user-menu">
-          <button className="user-avatar" onClick={toggleUserMenu}>
-            <img src="/static/images/avatar/2.jpg" alt="User Avatar" />
-          </button>
-          <ul
-            className={`user-dropdown ${
-              userMenuOpen ? 'user-dropdown-open' : ''
-            }`}
-          >
-            {settings.map((setting) => (
-              <li key={setting} className="user-dropdown-item">
-                {setting}
-              </li>
-            ))}
-          </ul>
-        </div> */}
       </div>
     </header>
   );

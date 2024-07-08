@@ -9,6 +9,7 @@
   justify-content: space-between;
   max-width: 1200px;
   margin: 0 auto;
+  position: relative;
 
   .card-icon {
     color: white;
@@ -43,6 +44,27 @@
 
 .nav-item {
   margin-left: 20px;
+  position: relative;
+  padding: 10px;
+
+  &:after {
+    background-color: none repeat scroll 0 0 transparent;
+    bottom: 0;
+    content: '';
+    display: block;
+    height: 2px;
+    left: 50%;
+    position: absolute;
+    background: #fff;
+    transition: width 0.3s ease 0s, left 0.3s ease 0s;
+    width: 0;
+  }
+  &:hover {
+    &:after {
+      width: 100%;
+      left: 0;
+    }
+  }
 }
 
 .nav-link {
@@ -92,6 +114,14 @@
 }
 
 @media (max-width: 768px) {
+  .nav {
+    position: absolute;
+  }
+  .logo {
+    position: relative;
+    left: 40%;
+  }
+
   .nav-toggle {
     display: block;
   }
@@ -103,6 +133,14 @@
 
   .nav-menu.nav-menu-open {
     display: flex;
+    position: absolute;
+    top: 30px;
+    left: -10px;
+    z-index: 1;
+    background: #273e61b3;
+    width: 200px;
+    padding: 0px 15px;
+    box-shadow: 5px 5px 5px #273e61;
   }
 
   .nav-item {

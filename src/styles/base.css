@@ -9,14 +9,13 @@ body {
   margin: 0;
   padding: 0;
 }
+.app-container {
+  font-family: Arial, sans-serif;
+}
 a {
   text-decoration: none !important;
   background: transparent;
 }
-.app-container {
-  font-family: Arial, sans-serif;
-}
-
 .content-container {
   display: flex;
   justify-content: center;

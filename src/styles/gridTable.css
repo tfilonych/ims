@@ -95,11 +95,13 @@ input {
 
 td svg {
   padding: 5px;
+  border-radius: 50%;
 
   &:hover {
     cursor: pointer;
     background-color: #273e612b;
     border-radius: 50%;
+    transition: background-color .5s ease;
     /* color: white; */
   }
 }

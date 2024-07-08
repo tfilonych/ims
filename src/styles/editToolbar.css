@@ -8,12 +8,13 @@
 
   svg {
     padding: 10px;
+    border-radius: 50%;
 
     &:hover {
       cursor: pointer;
-      background-color: #273e61;
-      border-radius: 50%;
-      color: white;
+      background-color: #273e612b;
+      transition: background-color .5s ease;
+      /* color: white; */
     }
   }
 }

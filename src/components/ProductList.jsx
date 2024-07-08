@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
-import GridTable from './GridTable.jsx';
-import { category, initialRows } from '../data';
+import GridTable from './GridTable';
+import DataLoader from './DataLoader';
+import CategoryInput from './CategoryInput';
 
 const ProductList = ({ products }) => {
   const columns = [
@@ -9,7 +9,7 @@ const ProductList = ({ products }) => {
       field: 'category',
       headerName: 'Category',
       type: 'singleSelect',
-      valueOptions: category,
+      valueOptions: [],
       width: 180,
       editable: true,
     },
@@ -19,13 +19,26 @@ const ProductList = ({ products }) => {
 
   return (
     <div className="product-list">
-      <GridTable
-        initialRows={products}
-        columns={columns}
-        rowKey="_id"
-        withPurchase={true}
-        collection="products"
-      />
+      <DataLoader endpoint="categories">
+        {(categories) => (
+          <GridTable
+            initialRows={products}
+            columns={columns}
+            rowKey="id"
+            withPurchase={true}
+            collection="products"
+            categories={categories}
+          >
+            {({ value, onChange }) => (
+              <CategoryInput
+                value={value}
+                onChange={onChange}
+                categories={categories}
+              />
+            )}
+          </GridTable>
+        )}
+      </DataLoader>
     </div>
   );
 };

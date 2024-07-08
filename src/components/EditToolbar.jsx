@@ -4,9 +4,11 @@ import AddCard from '@mui/icons-material/AddCard';
 const EditToolbar = ({ setRows, setEditingRowId, setEditRowData, rowKey }) => {
   const clickHandler = () => {
     const id = Date.now().toString();
-    const newRow = { [rowKey]: id, name: '', category: '', price: '', quantity: '', isNew: true };
+    const newRow = { [rowKey]: id, isNew: true };
 
-    setRows((oldRows) => [...oldRows, newRow]);
+    setRows((oldRows) =>
+      Array.isArray(oldRows) ? [...oldRows, newRow] : [newRow]
+    );
     setEditingRowId(id);
     setEditRowData(newRow);
   };
