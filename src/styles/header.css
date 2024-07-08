@@ -11,8 +11,11 @@
   margin: 0 auto;
   position: relative;
 
-  .card-icon {
-    color: white;
+  .user-icon {
+    svg {
+      font-size: 28px;
+      color: white;
+    }
   }
 }
 

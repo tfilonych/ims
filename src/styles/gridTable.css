@@ -1,3 +1,4 @@
+/* Global table styles */
 table {
   border: 1px solid #ccc;
   border-collapse: collapse;
@@ -30,6 +31,7 @@ table th {
   text-transform: uppercase;
 }
 
+/* Responsive styles for smaller screens */
 @media screen and (max-width: 600px) {
   table {
     border: 0;
@@ -75,33 +77,37 @@ table th {
   }
 }
 
+/* Component-specific styles */
 .grid-table {
   margin: 10px;
   display: flex;
   flex-direction: column;
   align-items: center;
   position: relative;
-}
 
-.action {
-  margin-right: 10px;
-}
+  /* Styles for action buttons */
+  .action {
+    margin-right: 10px;
+  }
 
-input {
-  width: 100%;
-  padding: 0.5em;
-  box-sizing: border-box;
-}
+  /* Styles for input fields */
+  input {
+    width: 100%;
+    padding: 0.5em;
+    box-sizing: border-box;
+  }
 
-td svg {
-  padding: 5px;
-  border-radius: 50%;
-
-  &:hover {
-    cursor: pointer;
-    background-color: #273e612b;
+  /* Styles for SVG icons */
+  td svg {
+    padding: 5px;
     border-radius: 50%;
-    transition: background-color .5s ease;
-    /* color: white; */
+
+    &:hover {
+      cursor: pointer;
+      background-color: #273e612b;
+      border-radius: 50%;
+      transition: background-color 0.5s ease;
+      /* color: white; */
+    }
   }
 }

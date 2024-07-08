@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
+import Face3Icon from '@mui/icons-material/Face3';
+import SentimentSatisfiedAltIcon from '@mui/icons-material/SentimentSatisfiedAlt';
 
 const menu = [
   { title: 'Products', path: '/' },
@@ -38,8 +39,8 @@ function Header() {
             ))}
           </ul>
         </nav>
-        <div className="card-icon">
-          <AddShoppingCartIcon />
+        <div className="user-icon">
+          <SentimentSatisfiedAltIcon />
         </div>
       </div>
     </header>
