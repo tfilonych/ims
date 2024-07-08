@@ -2,7 +2,7 @@ import { Routes, Route } from 'react-router-dom';
 import Header from './components/Header.jsx';
 import ProductListPage from './pages/ProductListPage.jsx';
 import CategoryListPage from './pages/CategoryListPage.jsx';
-import OrderList from './components/OrderList.jsx';
+import OrderListPage from './pages/OrderListPage.jsx';
 
 function App() {
   return (
@@ -12,7 +12,7 @@ function App() {
         <Routes>
           <Route path="/" element={<ProductListPage />} />
           <Route path="/categories" element={<CategoryListPage />} />
-          <Route path="/orders" element={<OrderList />} />
+          <Route path="/orders" element={<OrderListPage />} />
         </Routes>
       </div>
     </div>

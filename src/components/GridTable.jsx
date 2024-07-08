@@ -5,7 +5,7 @@ import SaveIcon from '@mui/icons-material/Save';
 import CancelIcon from '@mui/icons-material/Close';
 import EditIcon from '@mui/icons-material/Edit';
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
-import AddToCartModal from './AddToCartModal';
+import AddToCartModal from './AddToCardModal';
 import { updateItem, createItem, deleteItem } from './../http';
 
 const GridTable = ({
@@ -15,6 +15,7 @@ const GridTable = ({
   withPurchase = true,
   collection,
   children,
+  onAddToCart,
   categories,
 }) => {
   const [rows, setRows] = useState(initialRows);
@@ -61,13 +62,15 @@ const GridTable = ({
   };
 
   const handleInputChange = (field) => (value) => {
+    debugger;
+    console.log(editRowData);
     setEditRowData({
       ...editRowData,
       [field]: value,
     });
   };
 
-  const addToCartHandler = (id) => () => {
+  const addToCardHandler = (id) => () => {
     const product = rows.find((row) => row[rowKey] === id);
     setSelectedProduct(product);
     setIsModalOpen(true);
@@ -106,7 +109,7 @@ const GridTable = ({
             <EditIcon onClick={startEditHandler(id)} />
             <DeleteIcon onClick={deleteHandler(id)} />
             {withPurchase && (
-              <AddShoppingCartIcon onClick={addToCartHandler(id)} />
+              <AddShoppingCartIcon onClick={addToCardHandler(id)} />
             )}
           </>
         );
@@ -174,9 +177,10 @@ const GridTable = ({
       <AddToCartModal
         open={isModalOpen}
         onClose={closeModal}
-        product={selectedProduct}
         quantity={quantity}
+        product={selectedProduct}
         setQuantity={setQuantity}
+        setRows={setRows}
       />
     </div>
   );
