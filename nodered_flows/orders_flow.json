@@ -1,0 +1,337 @@
+[
+    {
+        "id": "4ac4d8573c311ff4",
+        "type": "tab",
+        "label": "Orders flow",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "b41693a9ccb4b756",
+        "type": "http in",
+        "z": "4ac4d8573c311ff4",
+        "name": "get/orders",
+        "url": "/orders",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 80,
+        "y": 60,
+        "wires": [
+            [
+                "920f4825a290cc5f"
+            ]
+        ]
+    },
+    {
+        "id": "059819434c391b1f",
+        "type": "http response",
+        "z": "4ac4d8573c311ff4",
+        "name": "",
+        "statusCode": "",
+        "headers": {},
+        "x": 650,
+        "y": 60,
+        "wires": []
+    },
+    {
+        "id": "91bbe6a58e1144ce",
+        "type": "http in",
+        "z": "4ac4d8573c311ff4",
+        "name": "create/order",
+        "url": "/orders",
+        "method": "post",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 90,
+        "y": 160,
+        "wires": [
+            [
+                "a7f3decdad62c12c"
+            ]
+        ]
+    },
+    {
+        "id": "1279b42a7c643c6b",
+        "type": "http response",
+        "z": "4ac4d8573c311ff4",
+        "name": "",
+        "statusCode": "",
+        "headers": {},
+        "x": 830,
+        "y": 160,
+        "wires": []
+    },
+    {
+        "id": "a7f3decdad62c12c",
+        "type": "function",
+        "z": "4ac4d8573c311ff4",
+        "name": "Prepare Payload",
+        "func": "msg.payload = {\n    number: msg.payload.number,\n    customer: msg.payload.customer,\n    product: msg.payload.product,\n    quantity: msg.payload.quantity,\n    date: msg.payload.date,\n    total: msg.payload.total\n};\ndelete msg.req.body.id;  // delete temporary id\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 280,
+        "y": 160,
+        "wires": [
+            [
+                "0099a896262d9c17"
+            ]
+        ]
+    },
+    {
+        "id": "874f84eacce068ce",
+        "type": "http in",
+        "z": "4ac4d8573c311ff4",
+        "name": "update/order",
+        "url": "/orders/:id",
+        "method": "put",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 90,
+        "y": 240,
+        "wires": [
+            [
+                "f8e40594861dd059"
+            ]
+        ]
+    },
+    {
+        "id": "0cd004f4f2b0eb4d",
+        "type": "http response",
+        "z": "4ac4d8573c311ff4",
+        "name": "",
+        "statusCode": "",
+        "headers": {},
+        "x": 650,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "e71a24df7b02208c",
+        "type": "http in",
+        "z": "4ac4d8573c311ff4",
+        "name": "delete/order",
+        "url": "/orders/:id",
+        "method": "delete",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 90,
+        "y": 380,
+        "wires": [
+            [
+                "50364918bf9496a5"
+            ]
+        ]
+    },
+    {
+        "id": "e11546ced0603aee",
+        "type": "http response",
+        "z": "4ac4d8573c311ff4",
+        "name": "",
+        "statusCode": "",
+        "headers": {},
+        "x": 670,
+        "y": 380,
+        "wires": []
+    },
+    {
+        "id": "50364918bf9496a5",
+        "type": "function",
+        "z": "4ac4d8573c311ff4",
+        "name": "Prepare Payload",
+        "func": "msg.payload = {\n    _id: msg.req.params.id\n}\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [
+            {
+                "var": "objectid",
+                "module": "objectid"
+            }
+        ],
+        "x": 280,
+        "y": 380,
+        "wires": [
+            [
+                "93ddcae3b5624f75"
+            ]
+        ]
+    },
+    {
+        "id": "df18043bf4f316e6",
+        "type": "function",
+        "z": "4ac4d8573c311ff4",
+        "name": "Process Result",
+        "func": "const insertedId = msg.payload.insertedId;\n\nif (insertedId) {\n    msg.payload = {\n        ...msg.req.body,\n        id: insertedId\n    };\n} else {\n    msg.payload = { error: 'Failed to insert order' };\n}\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 680,
+        "y": 160,
+        "wires": [
+            [
+                "1279b42a7c643c6b"
+            ]
+        ]
+    },
+    {
+        "id": "0099a896262d9c17",
+        "type": "mongodb4",
+        "z": "4ac4d8573c311ff4",
+        "clientNode": "c690ab1055bd4bc6",
+        "mode": "collection",
+        "collection": "orders",
+        "operation": "insertOne",
+        "output": "toArray",
+        "maxTimeMS": "0",
+        "handleDocId": true,
+        "name": "StoreDB orders",
+        "x": 480,
+        "y": 160,
+        "wires": [
+            [
+                "df18043bf4f316e6"
+            ]
+        ]
+    },
+    {
+        "id": "93ddcae3b5624f75",
+        "type": "mongodb4",
+        "z": "4ac4d8573c311ff4",
+        "clientNode": "c690ab1055bd4bc6",
+        "mode": "collection",
+        "collection": "orders",
+        "operation": "deleteOne",
+        "output": "toArray",
+        "maxTimeMS": "0",
+        "handleDocId": true,
+        "name": "StoreDB orders",
+        "x": 480,
+        "y": 380,
+        "wires": [
+            [
+                "e11546ced0603aee"
+            ]
+        ]
+    },
+    {
+        "id": "920f4825a290cc5f",
+        "type": "mongodb4",
+        "z": "4ac4d8573c311ff4",
+        "clientNode": "c690ab1055bd4bc6",
+        "mode": "collection",
+        "collection": "orders",
+        "operation": "find",
+        "output": "toArray",
+        "maxTimeMS": "0",
+        "handleDocId": false,
+        "name": "StoreDB orders",
+        "x": 280,
+        "y": 60,
+        "wires": [
+            [
+                "11ac763e552ef5b0"
+            ]
+        ]
+    },
+    {
+        "id": "11ac763e552ef5b0",
+        "type": "function",
+        "z": "4ac4d8573c311ff4",
+        "name": "Process Result",
+        "func": "if (!Array.isArray(msg.payload)) {\n    msg.payload = [];\n    return msg;\n}\n\nif (msg.payload.length === 0) {\n    return msg;\n}\n\nmsg.payload = msg.payload.map(item => {\n    item.id = item._id;\n    delete item._id;\n    return item;\n});\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 480,
+        "y": 60,
+        "wires": [
+            [
+                "059819434c391b1f"
+            ]
+        ]
+    },
+    {
+        "id": "f8e40594861dd059",
+        "type": "function",
+        "z": "4ac4d8573c311ff4",
+        "name": "Prepare Payload",
+        "func": "msg.query = {\n    _id: objectid(msg.req.params.id)\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [
+            {
+                "var": "objectid",
+                "module": "objectid"
+            }
+        ],
+        "x": 280,
+        "y": 240,
+        "wires": [
+            [
+                "9e3c8ff865207c7d",
+                "0cd004f4f2b0eb4d"
+            ]
+        ]
+    },
+    {
+        "id": "9e3c8ff865207c7d",
+        "type": "mongodb out",
+        "z": "4ac4d8573c311ff4",
+        "mongodb": "aee4960d52982ea4",
+        "name": "StoreDB orders",
+        "collection": "orders",
+        "payonly": false,
+        "upsert": false,
+        "multi": false,
+        "operation": "update",
+        "x": 480,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "c690ab1055bd4bc6",
+        "type": "mongodb4-client",
+        "name": "",
+        "protocol": "mongodb",
+        "hostname": "mongodb-8213-ubos-25wsw-mongodb-8213.ubos-25wsw",
+        "port": "27017",
+        "dbName": "ims",
+        "appName": "",
+        "authSource": "",
+        "authMechanism": "DEFAULT",
+        "tls": false,
+        "tlsCAFile": "",
+        "tlsCertificateKeyFile": "",
+        "tlsInsecure": false,
+        "connectTimeoutMS": "30000",
+        "socketTimeoutMS": "0",
+        "minPoolSize": "0",
+        "maxPoolSize": "100",
+        "maxIdleTimeMS": "0",
+        "uri": "",
+        "advanced": "{}",
+        "uriTabActive": "tab-uri-simple"
+    },
+    {
+        "id": "aee4960d52982ea4",
+        "type": "mongodb",
+        "hostname": "mongodb-8213-ubos-25wsw-mongodb-8213.ubos-25wsw",
+        "topology": "direct",
+        "connectOptions": "authSource=admin",
+        "port": "27017",
+        "db": "ims",
+        "name": "StoreDB"
+    }
+]

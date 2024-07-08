@@ -1,0 +1,376 @@
+[
+    {
+        "id": "5694fea4cf6c9534",
+        "type": "tab",
+        "label": "Aggregation Flow",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "b8af58510b68691c",
+        "type": "function",
+        "z": "5694fea4cf6c9534",
+        "name": "Prepare Payload",
+        "func": "msg.payload = [\n    {\n        \"$addFields\": {\n            \"category\": {\n                \"$toObjectId\": \"$category\"\n            }\n        }\n    },\n    {\n        \"$lookup\": {\n            \"from\": \"categories\",\n            \"localField\": \"category\",\n            \"foreignField\": \"_id\",\n            \"as\": \"categoryInfo\"\n        }\n    },\n    {\n        \"$unwind\": \"$categoryInfo\"\n    },\n    {\n        \"$group\": {\n            \"_id\": \"$categoryInfo.name\",\n            \"totalQuantity\": {\n                \"$sum\": {\n                    \"$toInt\": \"$quantity\"\n                }\n            }\n        }\n    },\n    {\n        \"$project\": {\n            \"_id\": 0,\n            \"category\": \"$_id\",\n            \"totalQuantity\": 1\n        }\n    }\n];\n\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 340,
+        "y": 40,
+        "wires": [
+            [
+                "f47fb305022ff2a3"
+            ]
+        ]
+    },
+    {
+        "id": "f47fb305022ff2a3",
+        "type": "mongodb in",
+        "z": "5694fea4cf6c9534",
+        "mongodb": "aee4960d52982ea4",
+        "name": "",
+        "collection": "products",
+        "operation": "aggregate",
+        "x": 550,
+        "y": 40,
+        "wires": [
+            [
+                "e101debd8d06abc3"
+            ]
+        ]
+    },
+    {
+        "id": "0ec75ae43e0ed115",
+        "type": "http in",
+        "z": "5694fea4cf6c9534",
+        "name": "",
+        "url": "/categoriesQuantity",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 110,
+        "y": 40,
+        "wires": [
+            [
+                "b8af58510b68691c"
+            ]
+        ]
+    },
+    {
+        "id": "cad98faa1d95f8ba",
+        "type": "http response",
+        "z": "5694fea4cf6c9534",
+        "name": "",
+        "statusCode": "",
+        "headers": {},
+        "x": 950,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "e101debd8d06abc3",
+        "type": "function",
+        "z": "5694fea4cf6c9534",
+        "name": "Mapping Categories",
+        "func": "if (msg.payload.length === 0) {\n    msg.payload = [];\n    return msg;\n}\n\nmsg.payload = msg.payload.map(item => ({\n    category: item.category,\n    totalQuantity: item.totalQuantity\n}));\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 780,
+        "y": 40,
+        "wires": [
+            [
+                "cad98faa1d95f8ba"
+            ]
+        ]
+    },
+    {
+        "id": "800b5d7690dd2cc0",
+        "type": "http in",
+        "z": "5694fea4cf6c9534",
+        "name": "",
+        "url": "/lowStockProducts",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 100,
+        "y": 160,
+        "wires": [
+            [
+                "aabde1c778e1c4b2"
+            ]
+        ]
+    },
+    {
+        "id": "aabde1c778e1c4b2",
+        "type": "function",
+        "z": "5694fea4cf6c9534",
+        "name": "Prepare Payload",
+        "func": "msg.payload = [\n    {\n        \"$match\": {\n            \"quantity\": { \"$lt\": 10 }\n        }\n    },\n    {\n        \"$lookup\": {\n            \"from\": \"orders\",\n            \"localField\": \"id\",\n            \"foreignField\": \"product\",\n            \"as\": \"orders\"\n        }\n    },\n    {\n        \"$unwind\": \"$orders\"\n    },\n    {\n        \"$match\": {\n            \"orders\": { \"$exists\": true, \"$ne\": [] }\n        }\n    },\n    {\n        \"$project\": {\n            \"_id\": 0,\n            \"productId\": \"$id\",\n            \"productName\": \"$name\",\n            \"category\": 1,\n            \"price\": 1,\n            \"quantity\": 1,\n            \"orderQuantity\": \"$orders.quantity\",\n            \"orderId\": \"$orders.id\",\n            \"orderNumber\": \"$orders.number\",\n            \"orderCustomer\": \"$orders.customer\",\n            \"orderDate\": \"$orders.date\",\n            \"orderTotal\": \"$orders.total\"\n        }\n    }\n];\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 340,
+        "y": 160,
+        "wires": [
+            [
+                "1a8a97ad1b7a26ca"
+            ]
+        ]
+    },
+    {
+        "id": "1a8a97ad1b7a26ca",
+        "type": "mongodb in",
+        "z": "5694fea4cf6c9534",
+        "mongodb": "aee4960d52982ea4",
+        "name": "",
+        "collection": "products",
+        "operation": "aggregate",
+        "x": 550,
+        "y": 160,
+        "wires": [
+            [
+                "c6f1a5b3ac94f9f1"
+            ]
+        ]
+    },
+    {
+        "id": "c6f1a5b3ac94f9f1",
+        "type": "function",
+        "z": "5694fea4cf6c9534",
+        "name": "Mapping Products",
+        "func": "if (msg.payload.length === 0) {\n    msg.payload = [];\n    return msg;\n}\n\nmsg.payload = msg.payload.map(item => ({\n    productId: item.productId,\n    productName: item.productName,\n    category: item.category,\n    price: item.price,\n    quantity: item.quantity,\n    orderQuantity: item.orderQuantity,\n    orderId: item.orderId,\n    orderNumber: item.orderNumber,\n    orderCustomer: item.orderCustomer,\n    orderDate: item.orderDate,\n    orderTotal: item.orderTotal\n}));\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 770,
+        "y": 160,
+        "wires": [
+            [
+                "49c1df98f9583de0"
+            ]
+        ]
+    },
+    {
+        "id": "49c1df98f9583de0",
+        "type": "http response",
+        "z": "5694fea4cf6c9534",
+        "name": "",
+        "statusCode": "",
+        "headers": {},
+        "x": 930,
+        "y": 160,
+        "wires": []
+    },
+    {
+        "id": "338377292c18932a",
+        "type": "http in",
+        "z": "5694fea4cf6c9534",
+        "name": "",
+        "url": "/bestSellingProducts",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 110,
+        "y": 100,
+        "wires": [
+            [
+                "27332bb96afc2aab"
+            ]
+        ]
+    },
+    {
+        "id": "27332bb96afc2aab",
+        "type": "function",
+        "z": "5694fea4cf6c9534",
+        "name": "Prepare Payload",
+        "func": "msg.payload = [\n    {\n        \"$lookup\": {\n            \"from\": \"orders\",\n            \"localField\": \"id\",\n            \"foreignField\": \"product\",\n            \"as\": \"orderDetails\"\n        }\n    },\n    {\n        \"$unwind\": \"$orderDetails\"\n    },\n    {\n        \"$group\": {\n            \"_id\": \"$id\",\n            \"productName\": { \"$first\": \"$name\" },\n            \"totalQuantitySold\": { \"$sum\": \"$orderDetails.quantity\" }\n        }\n    },\n    {\n        \"$sort\": { \"totalQuantitySold\": -1 }\n    },\n    {\n        \"$limit\": 5\n    },\n    {\n        \"$project\": {\n            \"_id\": 0,\n            \"productId\": \"$_id\",\n            \"productName\": 1,\n            \"totalQuantitySold\": 1\n        }\n    }\n];\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 340,
+        "y": 100,
+        "wires": [
+            [
+                "75e972cdb8d29081"
+            ]
+        ]
+    },
+    {
+        "id": "75e972cdb8d29081",
+        "type": "mongodb in",
+        "z": "5694fea4cf6c9534",
+        "mongodb": "aee4960d52982ea4",
+        "name": "StoreDB products",
+        "collection": "products",
+        "operation": "aggregate",
+        "x": 550,
+        "y": 100,
+        "wires": [
+            [
+                "c3ce315fa554d6f7"
+            ]
+        ]
+    },
+    {
+        "id": "c3ce315fa554d6f7",
+        "type": "function",
+        "z": "5694fea4cf6c9534",
+        "name": "Mapping Products",
+        "func": "if (msg.payload.length === 0) {\n    msg.payload = [];\n    return msg;\n}\n\nmsg.payload = msg.payload.map(item => ({\n    productId: item.productId,\n    productName: item.productName,\n    totalQuantitySold: item.totalQuantitySold\n}));\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 770,
+        "y": 100,
+        "wires": [
+            [
+                "ee1831d17cde475d"
+            ]
+        ]
+    },
+    {
+        "id": "ee1831d17cde475d",
+        "type": "http response",
+        "z": "5694fea4cf6c9534",
+        "name": "",
+        "statusCode": "",
+        "headers": {},
+        "x": 930,
+        "y": 100,
+        "wires": []
+    },
+    {
+        "id": "146338a61fde929b",
+        "type": "http in",
+        "z": "5694fea4cf6c9534",
+        "name": "get/revenue",
+        "url": "/revenue",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 70,
+        "y": 240,
+        "wires": [
+            [
+                "7c14b067816aa464"
+            ]
+        ]
+    },
+    {
+        "id": "7c14b067816aa464",
+        "type": "function",
+        "z": "5694fea4cf6c9534",
+        "name": "Set Query Parameters",
+        "func": "/* This node extracts the startDate and endDate \nfrom the request query parameters and sets them in \nthe message object. \nex.: GET /revenue?startDate=2023-01-01&endDate=2023-12-31  */\nconst startDate = new Date(msg.req.query.startDate);\nconst endDate = new Date(msg.req.query.endDate);\n\nmsg.query = {\n    startDate: startDate,\n    endDate: endDate\n};\n\nmsg.payload = [\n    { \"$match\": { \"createdAt\": { \"$gte\": startDate, \"$lte\": endDate } } },\n    { \"$group\": { \"_id\": null, \"totalRevenue\": { \"$sum\": \"$total\" } } }\n];\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 320,
+        "y": 240,
+        "wires": [
+            [
+                "8e010880dbe5b3f5"
+            ]
+        ]
+    },
+    {
+        "id": "8e010880dbe5b3f5",
+        "type": "mongodb4",
+        "z": "5694fea4cf6c9534",
+        "clientNode": "c690ab1055bd4bc6",
+        "mode": "collection",
+        "collection": "orders",
+        "operation": "aggregate",
+        "output": "toArray",
+        "maxTimeMS": "",
+        "handleDocId": false,
+        "name": "StoreDB orders",
+        "x": 540,
+        "y": 240,
+        "wires": [
+            [
+                "c31cf6a22c160474"
+            ]
+        ]
+    },
+    {
+        "id": "c31cf6a22c160474",
+        "type": "function",
+        "z": "5694fea4cf6c9534",
+        "name": "Process Result",
+        "func": "if (!Array.isArray(msg.payload) || msg.payload.length === 0) {\n    msg.payload = { totalRevenue: 0 };\n} else {\n    msg.payload = { totalRevenue: msg.payload[0].totalRevenue };\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 740,
+        "y": 240,
+        "wires": [
+            [
+                "339f2501bf6bf575"
+            ]
+        ]
+    },
+    {
+        "id": "339f2501bf6bf575",
+        "type": "http response",
+        "z": "5694fea4cf6c9534",
+        "name": "",
+        "statusCode": "",
+        "headers": {},
+        "x": 890,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "aee4960d52982ea4",
+        "type": "mongodb",
+        "hostname": "mongodb-8213-ubos-25wsw-mongodb-8213.ubos-25wsw",
+        "topology": "direct",
+        "connectOptions": "authSource=admin",
+        "port": "27017",
+        "db": "ims",
+        "name": "StoreDB"
+    },
+    {
+        "id": "c690ab1055bd4bc6",
+        "type": "mongodb4-client",
+        "name": "",
+        "protocol": "mongodb",
+        "hostname": "mongodb-8213-ubos-25wsw-mongodb-8213.ubos-25wsw",
+        "port": "27017",
+        "dbName": "ims",
+        "appName": "",
+        "authSource": "",
+        "authMechanism": "DEFAULT",
+        "tls": false,
+        "tlsCAFile": "",
+        "tlsCertificateKeyFile": "",
+        "tlsInsecure": false,
+        "connectTimeoutMS": "30000",
+        "socketTimeoutMS": "0",
+        "minPoolSize": "0",
+        "maxPoolSize": "100",
+        "maxIdleTimeMS": "0",
+        "uri": "",
+        "advanced": "{}",
+        "uriTabActive": "tab-uri-simple"
+    }
+]

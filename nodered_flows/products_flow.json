@@ -1,0 +1,342 @@
+[
+    {
+        "id": "9e271030052e5c20",
+        "type": "tab",
+        "label": "Products flow",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "fdbdb884d5680664",
+        "type": "http in",
+        "z": "9e271030052e5c20",
+        "name": "get/products",
+        "url": "/products",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 90,
+        "y": 120,
+        "wires": [
+            [
+                "638f8153b5ab5192"
+            ]
+        ]
+    },
+    {
+        "id": "3a8b29332f74462a",
+        "type": "http response",
+        "z": "9e271030052e5c20",
+        "name": "",
+        "statusCode": "",
+        "headers": {},
+        "x": 670,
+        "y": 120,
+        "wires": []
+    },
+    {
+        "id": "7e34658876d3d021",
+        "type": "http in",
+        "z": "9e271030052e5c20",
+        "name": "create/product",
+        "url": "/products",
+        "method": "post",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 100,
+        "y": 220,
+        "wires": [
+            [
+                "deb353d1eba27775"
+            ]
+        ]
+    },
+    {
+        "id": "339308d3661d2ea2",
+        "type": "http response",
+        "z": "9e271030052e5c20",
+        "name": "",
+        "statusCode": "",
+        "headers": {},
+        "x": 810,
+        "y": 220,
+        "wires": []
+    },
+    {
+        "id": "deb353d1eba27775",
+        "type": "function",
+        "z": "9e271030052e5c20",
+        "name": "Prepare Payload",
+        "func": "msg.payload = {\n    category: msg.payload.category,\n    name: msg.payload.name,\n    price: msg.payload.price,\n    quantity: msg.payload.quantity\n};\n\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [
+            {
+                "var": "objectid",
+                "module": "objectid"
+            }
+        ],
+        "x": 280,
+        "y": 220,
+        "wires": [
+            [
+                "bcebaedd777cff63"
+            ]
+        ]
+    },
+    {
+        "id": "8911fb9eb90838ed",
+        "type": "http in",
+        "z": "9e271030052e5c20",
+        "name": "update/product",
+        "url": "/products/:id",
+        "method": "put",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 100,
+        "y": 300,
+        "wires": [
+            [
+                "e5f1340aa6b2ecd9"
+            ]
+        ]
+    },
+    {
+        "id": "c71ab0577ce173b3",
+        "type": "http response",
+        "z": "9e271030052e5c20",
+        "name": "",
+        "statusCode": "",
+        "headers": {},
+        "x": 670,
+        "y": 300,
+        "wires": []
+    },
+    {
+        "id": "e5f1340aa6b2ecd9",
+        "type": "function",
+        "z": "9e271030052e5c20",
+        "name": "Prepare Payload",
+        "func": "msg.query = {\n    _id: objectid(msg.req.params.id)\n}\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [
+            {
+                "var": "objectid",
+                "module": "objectid"
+            }
+        ],
+        "x": 280,
+        "y": 300,
+        "wires": [
+            [
+                "770c6680d49d4a41",
+                "c71ab0577ce173b3"
+            ]
+        ]
+    },
+    {
+        "id": "1d3d551e84614ae8",
+        "type": "http in",
+        "z": "9e271030052e5c20",
+        "name": "delete/product",
+        "url": "/products/:id",
+        "method": "delete",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 100,
+        "y": 400,
+        "wires": [
+            [
+                "9b9b2e5b3d1be4e2"
+            ]
+        ]
+    },
+    {
+        "id": "918db3f6e4ae5c51",
+        "type": "http response",
+        "z": "9e271030052e5c20",
+        "name": "",
+        "statusCode": "",
+        "headers": {},
+        "x": 630,
+        "y": 400,
+        "wires": []
+    },
+    {
+        "id": "9b9b2e5b3d1be4e2",
+        "type": "function",
+        "z": "9e271030052e5c20",
+        "name": "Delete product",
+        "func": "msg.payload = {\n    _id: objectid(msg.req.params.id)\n}\ndelete msg.payload._id\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [
+            {
+                "var": "objectid",
+                "module": "objectid"
+            }
+        ],
+        "x": 280,
+        "y": 400,
+        "wires": [
+            [
+                "954c34d0d6b749e6"
+            ]
+        ]
+    },
+    {
+        "id": "23a8a5824ffa069c",
+        "type": "function",
+        "z": "9e271030052e5c20",
+        "name": "Process Result",
+        "func": "const insertedId = msg.payload.insertedId;\n\nif (insertedId) {\n    msg.payload = {\n        ...msg.req.body,\n        id: insertedId\n    };\n} else {\n    msg.payload = { error: 'Failed to insert category' };\n}\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 660,
+        "y": 220,
+        "wires": [
+            [
+                "339308d3661d2ea2"
+            ]
+        ]
+    },
+    {
+        "id": "bcebaedd777cff63",
+        "type": "mongodb4",
+        "z": "9e271030052e5c20",
+        "clientNode": "c690ab1055bd4bc6",
+        "mode": "collection",
+        "collection": "products",
+        "operation": "insertOne",
+        "output": "toArray",
+        "maxTimeMS": "0",
+        "handleDocId": true,
+        "name": "StoreDB products",
+        "x": 470,
+        "y": 220,
+        "wires": [
+            [
+                "23a8a5824ffa069c"
+            ]
+        ]
+    },
+    {
+        "id": "638f8153b5ab5192",
+        "type": "mongodb4",
+        "z": "9e271030052e5c20",
+        "clientNode": "c690ab1055bd4bc6",
+        "mode": "collection",
+        "collection": "products",
+        "operation": "find",
+        "output": "toArray",
+        "maxTimeMS": "0",
+        "handleDocId": true,
+        "name": "StoreDB products",
+        "x": 290,
+        "y": 120,
+        "wires": [
+            [
+                "9bf77098085bb5d1"
+            ]
+        ]
+    },
+    {
+        "id": "954c34d0d6b749e6",
+        "type": "mongodb4",
+        "z": "9e271030052e5c20",
+        "clientNode": "c690ab1055bd4bc6",
+        "mode": "collection",
+        "collection": "products",
+        "operation": "deleteOne",
+        "output": "toArray",
+        "maxTimeMS": "0",
+        "handleDocId": true,
+        "name": "StoreDB products",
+        "x": 470,
+        "y": 400,
+        "wires": [
+            [
+                "918db3f6e4ae5c51"
+            ]
+        ]
+    },
+    {
+        "id": "9bf77098085bb5d1",
+        "type": "function",
+        "z": "9e271030052e5c20",
+        "name": "Process Result",
+        "func": "if (!Array.isArray(msg.payload)) {\n    msg.payload = [];\n    return msg;\n}\n\nif (msg.payload.length === 0) {\n    return msg;\n}\n\nmsg.payload = msg.payload.map(item => {\n    item.id = item._id;\n    delete item._id;\n    return item;\n});\nreturn msg;\n\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 500,
+        "y": 120,
+        "wires": [
+            [
+                "3a8b29332f74462a"
+            ]
+        ]
+    },
+    {
+        "id": "770c6680d49d4a41",
+        "type": "mongodb out",
+        "z": "9e271030052e5c20",
+        "mongodb": "aee4960d52982ea4",
+        "name": "StoreDB products",
+        "collection": "products",
+        "payonly": false,
+        "upsert": false,
+        "multi": false,
+        "operation": "update",
+        "x": 490,
+        "y": 300,
+        "wires": []
+    },
+    {
+        "id": "c690ab1055bd4bc6",
+        "type": "mongodb4-client",
+        "name": "",
+        "protocol": "mongodb",
+        "hostname": "mongodb-8213-ubos-25wsw-mongodb-8213.ubos-25wsw",
+        "port": "27017",
+        "dbName": "ims",
+        "appName": "",
+        "authSource": "",
+        "authMechanism": "DEFAULT",
+        "tls": false,
+        "tlsCAFile": "",
+        "tlsCertificateKeyFile": "",
+        "tlsInsecure": false,
+        "connectTimeoutMS": "30000",
+        "socketTimeoutMS": "0",
+        "minPoolSize": "0",
+        "maxPoolSize": "100",
+        "maxIdleTimeMS": "0",
+        "uri": "",
+        "advanced": "{}",
+        "uriTabActive": "tab-uri-simple"
+    },
+    {
+        "id": "aee4960d52982ea4",
+        "type": "mongodb",
+        "hostname": "mongodb-8213-ubos-25wsw-mongodb-8213.ubos-25wsw",
+        "topology": "direct",
+        "connectOptions": "authSource=admin",
+        "port": "27017",
+        "db": "ims",
+        "name": "StoreDB"
+    }
+]
