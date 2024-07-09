@@ -16,6 +16,11 @@ const ProductList = ({ products }) => {
     { field: 'price', headerName: 'Price', width: 120, editable: true },
     { field: 'quantity', headerName: 'Quantity', width: 120, editable: true },
   ];
+  const allowedActions = {
+    create: true,
+    edit: true,
+    purchase: true,
+  };
 
   return (
     <div className="product-list">
@@ -28,6 +33,7 @@ const ProductList = ({ products }) => {
             withPurchase={true}
             collection="products"
             categories={categories}
+            allowedActions={allowedActions}
           >
             {({ value, onChange }) => (
               <CategoryInput

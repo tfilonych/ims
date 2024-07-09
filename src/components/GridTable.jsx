@@ -17,6 +17,13 @@ const GridTable = ({
   children,
   onAddToCart,
   categories,
+  allowedActions = {
+    edit: false,
+    cancel: true,
+    remove: true,
+    purchase: false,
+    create: false,
+  },
 }) => {
   const [rows, setRows] = useState(initialRows);
   const [editingRowId, setEditingRowId] = useState(null);
@@ -34,8 +41,19 @@ const GridTable = ({
     setEditingRowId(id);
     setEditRowData(row);
   };
+  const isNewWithoutData = (row) => {
+    const keys = Object.keys(row);
+    return keys.length === 2 && keys.includes('isNew') && keys.includes(rowKey);
+  };
 
   const saveHandler = (id) => async () => {
+    if (isNewWithoutData(editRowData)) {
+      // Remove the new row if it has only 'isNew' and 'id' properties
+      setRows(rows.filter((row) => !(row.isNew && row[rowKey] === editRowData[rowKey])));
+      setEditingRowId(null);
+      return;
+    }
+
     let updatedRow;
     if (editRowData.isNew) {
       delete editRowData.isNew;
@@ -47,12 +65,14 @@ const GridTable = ({
     const updatedRows = rows.map((row) =>
       row[rowKey] === id ? updatedRow : row
     );
-
     setRows(updatedRows);
     setEditingRowId(null);
   };
 
   const cancelHandler = () => {
+    if (isNewWithoutData(editRowData)) {
+      setRows(rows.filter((row) => !(row.isNew && row[rowKey] === editRowData[rowKey])));
+    }
     setEditingRowId(null);
   };
 
@@ -62,8 +82,6 @@ const GridTable = ({
   };
 
   const handleInputChange = (field) => (value) => {
-    debugger;
-    console.log(editRowData);
     setEditRowData({
       ...editRowData,
       [field]: value,
@@ -85,7 +103,6 @@ const GridTable = ({
     const category = categories.find((category) => category.id === id);
     return category ? category.name : id;
   };
-
   const extendedColumns = [
     ...columns,
     {
@@ -106,9 +123,11 @@ const GridTable = ({
 
         return (
           <>
-            <EditIcon onClick={startEditHandler(id)} />
+            {allowedActions['edit'] && (
+              <EditIcon onClick={startEditHandler(id)} />
+            )}
             <DeleteIcon onClick={deleteHandler(id)} />
-            {withPurchase && (
+            {allowedActions['purchase'] && (
               <AddShoppingCartIcon onClick={addToCardHandler(id)} />
             )}
           </>
@@ -119,7 +138,7 @@ const GridTable = ({
 
   return (
     <div className="grid-table">
-      {withPurchase && (
+      {allowedActions['create'] && (
         <EditToolbar
           setRows={setRows}
           setEditingRowId={setEditingRowId}
@@ -155,6 +174,7 @@ const GridTable = ({
                         onChange={(e) =>
                           handleInputChange(col.field)(e.target.value)
                         }
+                        required
                       />
                     ) : col.field === 'category' ? (
                       getCategoryNameById(row[col.field])
