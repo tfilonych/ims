@@ -26,7 +26,17 @@ jobs:
           VITE_API_URL: ${{ secrets.VITE_API_URL }}
         run: npm run build
 
+      - name: Debug - List files in dist
+        run: ls -la dist
+
+      - name: Debug - Git status
+        run: git status
+
       - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           folder: dist
+          clean: true
+
+      - name: Post-deploy Debug - Git worktree list
+        run: git worktree list
