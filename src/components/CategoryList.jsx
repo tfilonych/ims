@@ -1,4 +1,4 @@
-import GridTable from './GridTable';
+import GridTableWrapper from './GridTableWrapper';
 
 const CategoryList = ({ categories }) => {
   const columns = [
@@ -7,10 +7,11 @@ const CategoryList = ({ categories }) => {
   const allowedActions = {
     create: true,
     edit: true,
+    remove: true
   };
 
   return (
-    <GridTable
+    <GridTableWrapper
       initialRows={categories}
       columns={columns}
       collection="categories"

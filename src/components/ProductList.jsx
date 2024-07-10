@@ -1,6 +1,6 @@
-import GridTable from './GridTable';
-import DataLoader from './DataLoader';
-import CategoryInput from './CategoryInput';
+import GridTable from './GridTable.jsx';
+import DataLoader from './DataLoader.js';
+import CategoryInput from './CategoryInput.jsx';
 
 const ProductList = ({ products }) => {
   const columns = [
@@ -17,6 +17,7 @@ const ProductList = ({ products }) => {
     { field: 'quantity', headerName: 'Quantity', width: 120, editable: true },
   ];
   const allowedActions = {
+    remove: true,
     create: true,
     edit: true,
     purchase: true,
