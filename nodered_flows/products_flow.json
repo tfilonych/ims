@@ -48,7 +48,7 @@
         "y": 220,
         "wires": [
             [
-                "deb353d1eba27775"
+                "7ba5f0431f610442"
             ]
         ]
     },
@@ -62,83 +62,6 @@
         "x": 810,
         "y": 220,
         "wires": []
-    },
-    {
-        "id": "deb353d1eba27775",
-        "type": "function",
-        "z": "9e271030052e5c20",
-        "name": "Prepare Payload",
-        "func": "msg.payload = {\n    category: msg.payload.category,\n    name: msg.payload.name,\n    price: msg.payload.price,\n    quantity: msg.payload.quantity\n};\n\nreturn msg;\n",
-        "outputs": 1,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [
-            {
-                "var": "objectid",
-                "module": "objectid"
-            }
-        ],
-        "x": 280,
-        "y": 220,
-        "wires": [
-            [
-                "bcebaedd777cff63"
-            ]
-        ]
-    },
-    {
-        "id": "8911fb9eb90838ed",
-        "type": "http in",
-        "z": "9e271030052e5c20",
-        "name": "update/product",
-        "url": "/products/:id",
-        "method": "put",
-        "upload": false,
-        "swaggerDoc": "",
-        "x": 100,
-        "y": 300,
-        "wires": [
-            [
-                "e5f1340aa6b2ecd9"
-            ]
-        ]
-    },
-    {
-        "id": "c71ab0577ce173b3",
-        "type": "http response",
-        "z": "9e271030052e5c20",
-        "name": "",
-        "statusCode": "",
-        "headers": {},
-        "x": 670,
-        "y": 300,
-        "wires": []
-    },
-    {
-        "id": "e5f1340aa6b2ecd9",
-        "type": "function",
-        "z": "9e271030052e5c20",
-        "name": "Prepare Payload",
-        "func": "msg.query = {\n    _id: objectid(msg.req.params.id)\n}\n\nreturn msg;",
-        "outputs": 1,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [
-            {
-                "var": "objectid",
-                "module": "objectid"
-            }
-        ],
-        "x": 280,
-        "y": 300,
-        "wires": [
-            [
-                "770c6680d49d4a41",
-                "c71ab0577ce173b3"
-            ]
-        ]
     },
     {
         "id": "1d3d551e84614ae8",
@@ -218,7 +141,7 @@
         "clientNode": "c690ab1055bd4bc6",
         "mode": "collection",
         "collection": "products",
-        "operation": "insertOne",
+        "operation": "updateOne",
         "output": "toArray",
         "maxTimeMS": "0",
         "handleDocId": true,
@@ -291,27 +214,130 @@
         ]
     },
     {
-        "id": "770c6680d49d4a41",
-        "type": "mongodb out",
+        "id": "7ba5f0431f610442",
+        "type": "function",
         "z": "9e271030052e5c20",
-        "mongodb": "aee4960d52982ea4",
-        "name": "StoreDB products",
-        "collection": "products",
-        "payonly": false,
-        "upsert": false,
-        "multi": false,
-        "operation": "update",
-        "x": 490,
-        "y": 300,
+        "name": "Prepare Payload",
+        "func": "msg.payload = [\n { \"_id\": msg.req.params.id },\n    // Setting the \"status\" field of the identified document to the new value received from msg.payload.status\n { \"$set\": { ...msg.req.body } }\n]\ndelete msg.req.body.id;\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [
+            {
+                "var": "objectid",
+                "module": "objectid"
+            }
+        ],
+        "x": 280,
+        "y": 220,
+        "wires": [
+            [
+                "bcebaedd777cff63"
+            ]
+        ]
+    },
+    {
+        "id": "ba569c2c5e35e6a6",
+        "type": "http in",
+        "z": "9e271030052e5c20",
+        "name": "update/product",
+        "url": "/products/:id",
+        "method": "put",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 100,
+        "y": 320,
+        "wires": [
+            [
+                "a7286ffaf4eb1002"
+            ]
+        ]
+    },
+    {
+        "id": "27d81b7afd1030c6",
+        "type": "http response",
+        "z": "9e271030052e5c20",
+        "name": "",
+        "statusCode": "",
+        "headers": {},
+        "x": 810,
+        "y": 320,
         "wires": []
+    },
+    {
+        "id": "a7286ffaf4eb1002",
+        "type": "function",
+        "z": "9e271030052e5c20",
+        "name": "Prepare Payload",
+        "func": "delete msg.req.body.id;\nmsg.payload = [\n { \"_id\": msg.req.params.id },\n    // Setting the \"status\" field of the identified document to the new value received from msg.payload.status\n { \"$set\": { ...msg.req.body } }\n]\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [
+            {
+                "var": "objectid",
+                "module": "objectid"
+            }
+        ],
+        "x": 280,
+        "y": 320,
+        "wires": [
+            [
+                "9914f7fa132394db"
+            ]
+        ]
+    },
+    {
+        "id": "9914f7fa132394db",
+        "type": "mongodb4",
+        "z": "9e271030052e5c20",
+        "clientNode": "c690ab1055bd4bc6",
+        "mode": "collection",
+        "collection": "products",
+        "operation": "updateOne",
+        "output": "toArray",
+        "maxTimeMS": "0",
+        "handleDocId": true,
+        "name": "StoreDB products",
+        "x": 470,
+        "y": 320,
+        "wires": [
+            [
+                "ff856e8812a29c4c"
+            ]
+        ]
+    },
+    {
+        "id": "ff856e8812a29c4c",
+        "type": "function",
+        "z": "9e271030052e5c20",
+        "name": "Process Result",
+        "func": "msg.payload = {\n    ...msg.req.body,\n    id: msg.req.params.id\n}\n      \nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 660,
+        "y": 320,
+        "wires": [
+            [
+                "27d81b7afd1030c6"
+            ]
+        ]
     },
     {
         "id": "c690ab1055bd4bc6",
         "type": "mongodb4-client",
         "name": "",
-        "protocol": "mongodb",
-        "hostname": "mongodb-8213-ubos-25wsw-mongodb-8213.ubos-25wsw",
-        "port": "27017",
+        "protocol": "mongodb+srv",
+        "hostname": "cluster0.6xdakl7.mongodb.net",
+        "port": "",
         "dbName": "ims",
         "appName": "",
         "authSource": "",
@@ -325,18 +351,8 @@
         "minPoolSize": "0",
         "maxPoolSize": "100",
         "maxIdleTimeMS": "0",
-        "uri": "",
+        "uri": "mongodb+srv://tivato:123456kycja@cluster0.6xdakl7.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0",
         "advanced": "{}",
-        "uriTabActive": "tab-uri-simple"
-    },
-    {
-        "id": "aee4960d52982ea4",
-        "type": "mongodb",
-        "hostname": "mongodb-8213-ubos-25wsw-mongodb-8213.ubos-25wsw",
-        "topology": "direct",
-        "connectOptions": "authSource=admin",
-        "port": "27017",
-        "db": "ims",
-        "name": "StoreDB"
+        "uriTabActive": "tab-uri-advanced"
     }
 ]

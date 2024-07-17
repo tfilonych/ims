@@ -1,6 +1,6 @@
 [
     {
-        "id": "7c0e1e36965e7a74",
+        "id": "ae5ec3561019ee27",
         "type": "tab",
         "label": "Categories flow",
         "disabled": false,
@@ -8,9 +8,9 @@
         "env": []
     },
     {
-        "id": "9865740e762dbeb8",
+        "id": "94df8e52a7d4eea2",
         "type": "http in",
-        "z": "7c0e1e36965e7a74",
+        "z": "ae5ec3561019ee27",
         "name": "get/categories",
         "url": "/categories",
         "method": "get",
@@ -20,14 +20,14 @@
         "y": 80,
         "wires": [
             [
-                "cfe6375c3ea79012"
+                "5a179dd3a7cddc5b"
             ]
         ]
     },
     {
-        "id": "6a219a3e67836666",
+        "id": "168e15775379df67",
         "type": "http response",
-        "z": "7c0e1e36965e7a74",
+        "z": "ae5ec3561019ee27",
         "name": "",
         "statusCode": "",
         "headers": {},
@@ -36,9 +36,9 @@
         "wires": []
     },
     {
-        "id": "3b98651f97a9b699",
+        "id": "3c3a93e28d1a0cc0",
         "type": "http in",
-        "z": "7c0e1e36965e7a74",
+        "z": "ae5ec3561019ee27",
         "name": "create/category",
         "url": "/categories",
         "method": "post",
@@ -48,14 +48,14 @@
         "y": 180,
         "wires": [
             [
-                "0ab04439a763a6ec"
+                "14200b4588718147"
             ]
         ]
     },
     {
-        "id": "6f26278ea8fb2da3",
+        "id": "6f3940b3e6bc7fcb",
         "type": "http response",
-        "z": "7c0e1e36965e7a74",
+        "z": "ae5ec3561019ee27",
         "name": "",
         "statusCode": "",
         "headers": {},
@@ -64,12 +64,13 @@
         "wires": []
     },
     {
-        "id": "0ab04439a763a6ec",
+        "id": "14200b4588718147",
         "type": "function",
-        "z": "7c0e1e36965e7a74",
+        "z": "ae5ec3561019ee27",
         "name": "Prepare Payload",
         "func": "msg.payload = {\n    name: msg.payload.name\n};\ndelete msg.req.body.id;  // delete temporary id\nreturn msg;",
         "outputs": 1,
+        "timeout": "",
         "noerr": 0,
         "initialize": "",
         "finalize": "",
@@ -78,14 +79,14 @@
         "y": 180,
         "wires": [
             [
-                "d399b5640af6fc5d"
+                "0bbea4ce8b40665c"
             ]
         ]
     },
     {
-        "id": "10c18e0203d9b36e",
+        "id": "f83da864558f5537",
         "type": "http in",
-        "z": "7c0e1e36965e7a74",
+        "z": "ae5ec3561019ee27",
         "name": "update/category",
         "url": "/categories/:id",
         "method": "put",
@@ -95,25 +96,25 @@
         "y": 260,
         "wires": [
             [
-                "d99b57777641f3cb"
+                "018d7eb93bfa79c2"
             ]
         ]
     },
     {
-        "id": "3c5b402dee383204",
+        "id": "254bc8c28813f281",
         "type": "http response",
-        "z": "7c0e1e36965e7a74",
+        "z": "ae5ec3561019ee27",
         "name": "",
         "statusCode": "",
         "headers": {},
-        "x": 670,
+        "x": 850,
         "y": 260,
         "wires": []
     },
     {
-        "id": "0a61a887b450b984",
+        "id": "6aa47622ccf21386",
         "type": "http in",
-        "z": "7c0e1e36965e7a74",
+        "z": "ae5ec3561019ee27",
         "name": "delete/category",
         "url": "/categories/:id",
         "method": "delete",
@@ -123,25 +124,25 @@
         "y": 400,
         "wires": [
             [
-                "f1462365894ab6e9"
+                "63b2fc03f4209e42"
             ]
         ]
     },
     {
-        "id": "285fc0eaa0e05f22",
+        "id": "908c3f78c0ed583b",
         "type": "http response",
-        "z": "7c0e1e36965e7a74",
+        "z": "ae5ec3561019ee27",
         "name": "",
         "statusCode": "",
         "headers": {},
-        "x": 690,
+        "x": 670,
         "y": 400,
         "wires": []
     },
     {
-        "id": "f1462365894ab6e9",
+        "id": "63b2fc03f4209e42",
         "type": "function",
-        "z": "7c0e1e36965e7a74",
+        "z": "ae5ec3561019ee27",
         "name": "Prepare Payload",
         "func": "msg.payload = {\n    _id: msg.req.params.id\n}\n\nreturn msg;",
         "outputs": 1,
@@ -154,21 +155,22 @@
                 "module": "objectid"
             }
         ],
-        "x": 320,
+        "x": 300,
         "y": 400,
         "wires": [
             [
-                "b6827c7ee073c10f"
+                "67c90f69429c371a"
             ]
         ]
     },
     {
-        "id": "1ab1662184dac558",
+        "id": "c0d896e24c87827a",
         "type": "function",
-        "z": "7c0e1e36965e7a74",
+        "z": "ae5ec3561019ee27",
         "name": "Process Result",
         "func": "const insertedId = msg.payload.insertedId;\n\nif (insertedId) {\n    msg.payload = {\n        ...msg.req.body,\n        id: insertedId\n    };\n} else {\n    msg.payload = { error: 'Failed to insert category' };\n}\nreturn msg;\n",
         "outputs": 1,
+        "timeout": "",
         "noerr": 0,
         "initialize": "",
         "finalize": "",
@@ -177,14 +179,14 @@
         "y": 180,
         "wires": [
             [
-                "6f26278ea8fb2da3"
+                "6f3940b3e6bc7fcb"
             ]
         ]
     },
     {
-        "id": "d399b5640af6fc5d",
+        "id": "0bbea4ce8b40665c",
         "type": "mongodb4",
-        "z": "7c0e1e36965e7a74",
+        "z": "ae5ec3561019ee27",
         "clientNode": "c690ab1055bd4bc6",
         "mode": "collection",
         "collection": "categories",
@@ -197,14 +199,14 @@
         "y": 180,
         "wires": [
             [
-                "1ab1662184dac558"
+                "c0d896e24c87827a"
             ]
         ]
     },
     {
-        "id": "b6827c7ee073c10f",
+        "id": "67c90f69429c371a",
         "type": "mongodb4",
-        "z": "7c0e1e36965e7a74",
+        "z": "ae5ec3561019ee27",
         "clientNode": "c690ab1055bd4bc6",
         "mode": "collection",
         "collection": "categories",
@@ -217,14 +219,14 @@
         "y": 400,
         "wires": [
             [
-                "285fc0eaa0e05f22"
+                "908c3f78c0ed583b"
             ]
         ]
     },
     {
-        "id": "cfe6375c3ea79012",
+        "id": "5a179dd3a7cddc5b",
         "type": "mongodb4",
-        "z": "7c0e1e36965e7a74",
+        "z": "ae5ec3561019ee27",
         "clientNode": "c690ab1055bd4bc6",
         "mode": "collection",
         "collection": "categories",
@@ -237,14 +239,14 @@
         "y": 80,
         "wires": [
             [
-                "266b556692e3dabb"
+                "291e9d34fda3c541"
             ]
         ]
     },
     {
-        "id": "266b556692e3dabb",
+        "id": "291e9d34fda3c541",
         "type": "function",
-        "z": "7c0e1e36965e7a74",
+        "z": "ae5ec3561019ee27",
         "name": "Process Result",
         "func": "if (!Array.isArray(msg.payload)) {\n    msg.payload = [];\n    return msg;\n}\n\nif (msg.payload.length === 0) {\n    return msg;\n}\n\nmsg.payload = msg.payload.map(item => {\n    item.id = item._id;\n    delete item._id;\n    return item;\n});\nreturn msg;\n",
         "outputs": 1,
@@ -256,17 +258,18 @@
         "y": 80,
         "wires": [
             [
-                "6a219a3e67836666"
+                "168e15775379df67"
             ]
         ]
     },
     {
-        "id": "d99b57777641f3cb",
+        "id": "018d7eb93bfa79c2",
         "type": "function",
-        "z": "7c0e1e36965e7a74",
+        "z": "ae5ec3561019ee27",
         "name": "Prepare Payload",
-        "func": "msg.query = {\n    _id: objectid(msg.req.params.id)\n}\nreturn msg;",
+        "func": "\nmsg.payload = [\n { \"_id\": msg.req.params.id },\n    // Setting the \"status\" field of the identified document to the new value received from msg.payload.status\n { \"$set\": { ...msg.req.body } }\n]\n\n\nreturn msg;",
         "outputs": 1,
+        "timeout": "",
         "noerr": 0,
         "initialize": "",
         "finalize": "",
@@ -280,33 +283,57 @@
         "y": 260,
         "wires": [
             [
-                "868d540d36fe34cf",
-                "3c5b402dee383204"
+                "a50d0d5d85f56b32"
             ]
         ]
     },
     {
-        "id": "868d540d36fe34cf",
-        "type": "mongodb out",
-        "z": "7c0e1e36965e7a74",
-        "mongodb": "aee4960d52982ea4",
-        "name": "StoreDB categories",
+        "id": "a50d0d5d85f56b32",
+        "type": "mongodb4",
+        "z": "ae5ec3561019ee27",
+        "clientNode": "c690ab1055bd4bc6",
+        "mode": "collection",
         "collection": "categories",
-        "payonly": false,
-        "upsert": false,
-        "multi": false,
-        "operation": "update",
+        "operation": "updateOne",
+        "output": "toArray",
+        "maxTimeMS": "0",
+        "handleDocId": true,
+        "name": "StoreDB categories",
         "x": 510,
         "y": 260,
-        "wires": []
+        "wires": [
+            [
+                "66eb22dfadf03d72"
+            ]
+        ]
+    },
+    {
+        "id": "66eb22dfadf03d72",
+        "type": "function",
+        "z": "ae5ec3561019ee27",
+        "name": "Process Result",
+        "func": "msg.payload = {\n    ...msg.req.body,\n    id: msg.req.params.id\n}\n      \nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 700,
+        "y": 260,
+        "wires": [
+            [
+                "254bc8c28813f281"
+            ]
+        ]
     },
     {
         "id": "c690ab1055bd4bc6",
         "type": "mongodb4-client",
         "name": "",
-        "protocol": "mongodb",
-        "hostname": "mongodb-8213-ubos-25wsw-mongodb-8213.ubos-25wsw",
-        "port": "27017",
+        "protocol": "mongodb+srv",
+        "hostname": "cluster0.6xdakl7.mongodb.net",
+        "port": "",
         "dbName": "ims",
         "appName": "",
         "authSource": "",
@@ -320,18 +347,8 @@
         "minPoolSize": "0",
         "maxPoolSize": "100",
         "maxIdleTimeMS": "0",
-        "uri": "",
+        "uri": "mongodb+srv://tivato:123456kycja@cluster0.6xdakl7.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0",
         "advanced": "{}",
-        "uriTabActive": "tab-uri-simple"
-    },
-    {
-        "id": "aee4960d52982ea4",
-        "type": "mongodb",
-        "hostname": "mongodb-8213-ubos-25wsw-mongodb-8213.ubos-25wsw",
-        "topology": "direct",
-        "connectOptions": "authSource=admin",
-        "port": "27017",
-        "db": "ims",
-        "name": "StoreDB"
+        "uriTabActive": "tab-uri-advanced"
     }
 ]
