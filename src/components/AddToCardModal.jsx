@@ -1,19 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import AddCardIcon from '@mui/icons-material/AddCard';
 import CloseIcon from '@mui/icons-material/Close';
 import { createItem, updateItem, deleteItem } from './../http';
 
-const AddToCartModal = ({
-  open,
-  onClose,
-  product,
-  quantity,
-  setQuantity,
-  setRows,
-}) => {
+const AddToCartModal = ({ editRowData: product, openModal }) => {
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
-
-  if (!open) return null;
+  const [quantity, setQuantity] = useState(1);
+  // const updatedRows = rows.map((row) =>
+  // row[rowKey] === id ? updatedRow : row
+  // );
+  // setRows(updatedRows);
+  // useEffect(() => {
+  //   modal && addEventListener('click', () => modal.showModal())
+  // })
+  // if (!open) return null;
 
   const generateOrderNumber = () => {
     return `ORD-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
@@ -68,7 +68,7 @@ const AddToCartModal = ({
   return (
     <div className="modal-overlay">
       <div className="modal-content">
-        <CloseIcon className="close-button" onClick={onClose} />
+        <CloseIcon className="close-button" onClick={() => openModal(false)} />
         <h2>Add to Cart</h2>
         <div>
           <p>Product: {product.name}</p>
@@ -82,9 +82,8 @@ const AddToCartModal = ({
               <label htmlFor="quantity">Quantity:</label>
               <input
                 type="number"
-                id="quantity"
                 min="1"
-                max={product.quantity}
+                max={Number(product.quantity)}
                 value={quantity}
                 onChange={(e) => setQuantity(Number(e.target.value))}
               />

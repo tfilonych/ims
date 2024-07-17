@@ -9,12 +9,12 @@ import {
 const ActionCell = ({
   isInEditMode,
   allowedActions,
-  saveHandler,
-  cancelHandler,
-  editHandler,
-  deleteHandler,
-  purchaseHandler,
   id,
+  editHandler,
+  purchaseHandler,
+  cancelHandler,
+  removeHandler,
+  saveHandler,
 }) => {
   return (
     <>
@@ -27,7 +27,7 @@ const ActionCell = ({
         <>
           {allowedActions?.edit && <EditIcon onClick={() => editHandler(id)} />}
           {allowedActions?.remove && (
-            <DeleteIcon onClick={() => deleteHandler(id)} />
+            <DeleteIcon onClick={() => removeHandler(id)} />
           )}
           {allowedActions?.purchase && (
             <AddShoppingCartIcon onClick={() => purchaseHandler(id)} />

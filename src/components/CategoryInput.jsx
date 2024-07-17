@@ -1,17 +1,27 @@
 import React, { useState, useEffect } from 'react';
 import { createItem } from './../http';
 
-const CategoryInput = ({ value, onChange, categories }) => {
-  const [inputValue, setInputValue] = useState('');
+const CategoryInput = ({ editRowData = null, row, categories = null }) => {
+  const [inputValue, setInputValue] = useState({
+    id: null,
+    name: '',
+  });
+  const [isOnEditMode, setEditMode] = useState(false);
 
   useEffect(() => {
-    const category = categories.find((category) => category.id === value);
-    setInputValue(category ? category.name : '');
-  }, [value, categories]);
+    const category = categories.find(
+      (category) => category.id === row.category
+    );
+    setInputValue(category ? category : '');
+  }, []);
+
+  useEffect(() => {
+    setEditMode(editRowData?.category === inputValue.id);
+  }, [editRowData, inputValue.id]);
 
   const handleChange = (e) => {
-    const name = e.target.value;
-    setInputValue(name);
+    const { name, value } = e.target;
+    setInputValue((prev) => ({ ...prev, [name]: value }));
   };
 
   const updateListHandler = async () => {
@@ -27,22 +37,30 @@ const CategoryInput = ({ value, onChange, categories }) => {
   };
 
   return (
-    <>
-      <input
-        type="text"
-        value={inputValue}
-        onChange={handleChange}
-        onBlur={updateListHandler}
-        list="categories-list"
-      />
-      <datalist id="categories-list">
-        {categories.map((category) => (
-          <option key={category.id} value={category.name}>
-            {category.name}
-          </option>
-        ))}
-      </datalist>
-    </>
+    <div className="grid-table-cell">
+      {isOnEditMode ? (
+        <>
+          <input
+            type="text"
+            name="name"
+            value={inputValue.name}
+            onChange={handleChange}
+            onBlur={updateListHandler}
+            list="categories-list"
+          />
+          <datalist id="categories-list" data-category={categories[0]}>
+            {categories &&
+              categories.map((category) => (
+                <option key={category.id} value={category.name}>
+                  {category.name}
+                </option>
+              ))}
+          </datalist>
+        </>
+      ) : (
+        inputValue.name
+      )}
+    </div>
   );
 };
 

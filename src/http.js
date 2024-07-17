@@ -10,9 +10,9 @@ export const fetchItems = async (collection) => {
   }
 };
 
-export const updateItem = async (collection, id, data) => {
+export const updateItem = async (collection, data) => {
   try {
-    const response = await fetch(`${API_URL}/${collection}/${id}`, {  
+    const response = await fetch(`${API_URL}/${collection}/${data.id}`, {  
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',

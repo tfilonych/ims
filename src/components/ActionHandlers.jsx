@@ -4,22 +4,24 @@ import { isNewWithoutData } from '../utils';
 
 const ActionHandlers = ({
   children,
-  findCurrentRow,
   setEditingRowId,
   setEditRowData,
   editRowData,
   collection,
   rowKey,
   rows,
-  setRows
+  setRows,
+  openModal,
 }) => {
-  const editHandler = (id) => {
-    const row = findCurrentRow(id);
-    setEditingRowId(id);
-    setEditRowData(row);
+  const edit = (id) => {
+    debugger;
+    setEditRowData(id)
+    // const rxow = rows.find((row) => row[rowKey] === id);
+    // setEditingRowId(id);
+    // setEditRowData(row);
   };
 
-  const saveHandler = async (id) => {
+  const save = async (id) => {
     if (isNewWithoutData(editRowData)) {
       setRows(
         rows.filter(
@@ -45,7 +47,7 @@ const ActionHandlers = ({
     setEditingRowId(null);
   };
 
-  const cancelHandler = () => {
+  const cancel = () => {
     if (isNewWithoutData(editRowData)) {
       setRows(
         rows.filter(
@@ -56,23 +58,24 @@ const ActionHandlers = ({
     setEditingRowId(null);
   };
 
-  const deleteHandler = async (id) => {
+  const remove = async (id) => {
+    // setRows(rows.filter((row) => row[rowKey] !== id));
     await deleteItem(collection, id);
-    setRows(rows.filter((row) => row[rowKey] !== id));
   };
 
-  const purchaseHandler = (id) => {
-    const row = findCurrentRow(id);
-    setSelectedProduct(product);
-    setIsModalOpen(true);
+  const purchase = (id) => {
+    const row = rows.find((row) => row[rowKey] === id);
+    setEditRowData(row);
+    openModal(true);
+    //setIsModalOpen(true);
   };
 
   return children({
-    editHandler,
-    saveHandler,
-    cancelHandler,
-    deleteHandler,
-    purchaseHandler,
+    edit,
+    save,
+    cancel,
+    remove,
+    purchase,
   });
 };
 

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import GridTableWrapper from './GridTableWrapper.jsx';
+import GridTable from './GridTable.jsx';
 
 const OrderList = ({ orders }) => {
   const columns = [
@@ -13,7 +13,7 @@ const OrderList = ({ orders }) => {
   };
 
   return (
-    <GridTableWrapper
+    <GridTable
       initialRows={orders}
       columns={columns}
       rowKey="id"

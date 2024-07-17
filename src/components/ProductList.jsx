@@ -5,14 +5,14 @@ import CategoryInput from './CategoryInput.jsx';
 const ProductList = ({ products }) => {
   const columns = [
     { field: 'name', headerName: 'Name', width: 180, editable: true },
-    {
-      field: 'category',
-      headerName: 'Category',
-      type: 'singleSelect',
-      valueOptions: [],
-      width: 180,
-      editable: true,
-    },
+    // {
+    //   field: 'category',
+    //   headerName: 'Category',
+    //   type: 'singleSelect',
+    //   valueOptions: [],
+    //   width: 180,
+    //   editable: true,
+    // },
     { field: 'price', headerName: 'Price', width: 120, editable: true },
     { field: 'quantity', headerName: 'Quantity', width: 120, editable: true },
   ];
@@ -36,10 +36,10 @@ const ProductList = ({ products }) => {
             categories={categories}
             allowedActions={allowedActions}
           >
-            {({ value, onChange }) => (
+            {({ row, editRowData }) => (
               <CategoryInput
-                value={value}
-                onChange={onChange}
+                editRowData={editRowData}
+                row={row}
                 categories={categories}
               />
             )}

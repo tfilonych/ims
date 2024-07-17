@@ -1,113 +1,112 @@
 /* Global table styles */
-table {
+.grid-table {
   border: 1px solid #ccc;
-  border-collapse: collapse;
-  margin: 0;
+  margin: 10px;
   padding: 0;
   width: 100%;
-  table-layout: fixed;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  position: relative;
 }
 
-table caption {
-  font-size: 1.5em;
-  margin: 0.5em 0 0.75em;
+.table-header-container,
+.grid-table-row {
+  display: flex;
+  width: 100%;
 }
 
-table tr {
-  background-color: #f8f8f8;
-  border: 1px solid #ddd;
-  padding: 0.35em;
-}
-
-table th,
-table td {
+.table-header,
+.grid-table-cell {
+  flex: 1;
   padding: 0.625em;
   text-align: center;
+  border: 1px solid #ddd;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  order: 1;
+
+  &[data-label="actions"] {
+    order: 2
+  }
 }
 
-table th {
+.table-header {
+  background-color: #f8f8f8;
   font-size: 0.85em;
   letter-spacing: 0.1em;
   text-transform: uppercase;
+  order: 1;
+
+  &[data-label="actions"] {
+    order: 2
+  }
+}
+
+.grid-table-row {
+  background-color: #f8f8f8;
+  border: 1px solid #ddd;
+}
+
+/* Styles for action buttons */
+.action {
+  margin-right: 10px;
+}
+
+/* Styles for input fields */
+.grid-table input {
+  width: 100%;
+  padding: 0.5em;
+  box-sizing: border-box;
+}
+
+/* Styles for SVG icons */
+.grid-table-cell svg {
+  padding: 5px;
+  border-radius: 50%;
+}
+
+.grid-table-cell svg:hover {
+  cursor: pointer;
+  background-color: #273e612b;
+  border-radius: 50%;
+  transition: background-color 0.5s ease;
 }
 
 /* Responsive styles for smaller screens */
 @media screen and (max-width: 600px) {
-  table {
+  .grid-table {
     border: 0;
   }
 
-  table caption {
-    font-size: 1.3em;
+  .table-header-container {
+    display: none;
   }
 
-  table thead {
-    border: none;
-    clip: rect(0 0 0 0);
-    height: 1px;
-    margin: -1px;
-    overflow: hidden;
-    padding: 0;
-    position: absolute;
-    width: 1px;
-  }
-
-  table tr {
+  .grid-table-row {
+    flex-direction: column;
     border-bottom: 3px solid #ddd;
-    display: block;
     margin-bottom: 0.625em;
   }
 
-  table td {
+  .grid-table-cell {
     border-bottom: 1px solid #ddd;
-    display: block;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     font-size: 0.8em;
     text-align: right;
   }
 
-  table td::before {
+  .grid-table-cell::before {
     content: attr(data-label);
-    float: left;
     font-weight: bold;
     text-transform: uppercase;
-  }
-
-  table td:last-child {
-    border-bottom: 0;
-  }
-}
-
-/* Component-specific styles */
-.grid-table {
-  margin: 10px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  position: relative;
-
-  /* Styles for action buttons */
-  .action {
     margin-right: 10px;
   }
 
-  /* Styles for input fields */
-  input {
-    width: 100%;
-    padding: 0.5em;
-    box-sizing: border-box;
-  }
-
-  /* Styles for SVG icons */
-  td svg {
-    padding: 5px;
-    border-radius: 50%;
-
-    &:hover {
-      cursor: pointer;
-      background-color: #273e612b;
-      border-radius: 50%;
-      transition: background-color 0.5s ease;
-      /* color: white; */
-    }
+  .grid-table-row .grid-table-cell:last-child {
+    border-bottom: 0;
   }
 }
